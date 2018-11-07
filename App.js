@@ -38,7 +38,8 @@ export default class App extends Component {
     const config = {  
       apiKey: "AIzaSyD4RmcatLvAeir4iXsx0SIOiPQeuFpuKXg",  
       authDomain: "rentalapp-19803.firebaseapp.com",  
-
+      databaseURL: "https://rentalapp-19803.firebaseio.com",
+      storageBucket: "rentalapp-19803.appspot.com"
     };  
     firebase.initializeApp(config);
 
