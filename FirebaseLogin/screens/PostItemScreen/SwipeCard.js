@@ -1,11 +1,21 @@
 import React, { Component } from 'react';
 import {StyleSheet, Text, View } from 'react-native';
 
-export default class MyOffersScreen extends Component {
+export default class SwipeCard extends Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            text:null,
+            
+        }
+        
+    }
+
   render() {
     return (
       <View style={styles.container}>
-        <Text>This is User Profile Screen</Text>
+        <Text>{this.state.text}</Text>
       </View>
     );
   }

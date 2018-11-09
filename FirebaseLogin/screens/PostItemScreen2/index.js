@@ -5,7 +5,7 @@ export default class MyOffersScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>This is User Profile Screen</Text>
+        <Text>This is Post Item Screen 2</Text>
       </View>
     );
   }

@@ -6,23 +6,84 @@ import RNFetchBlob from 'react-native-fetch-blob'
 import { firebase } from '@firebase/app';
 import StepIndicator from 'react-native-step-indicator';
 import * as myConstantClass from '../../../constants'
+//import Carousel from 'react-native-snap-carousel';
+import RNSwiper from 'react-native-3d-swiper';
+import SwipeCard from './SwipeCard';
+import update from 'immutability-helper';
+import { TextField } from 'react-native-material-textfield';
+import { RaisedTextButton } from 'react-native-material-buttons';
+import UserProfileScreen from '../UserProfileScreen';
+import TextFieldItemTitle from '../../components/TextFieldItemTitle'
 
 export default class PostItemScreen extends Component {
-
-    
+   
     constructor(props) {
         super(props)
         this.state = {
             loading:false,
+            imagesLoaded:[],
             dp:null,
-            currentPosition:2
-        }
+            itemtitle: '',
+            
+        };
+
+        this.onSwipeUp = this.onSwipeUp.bind(this);
+
+      this.onFocus = this.onFocus.bind(this);
+      this.onSubmit = this.onSubmit.bind(this);
+      this.onChangeText = this.onChangeText.bind(this);
+      //this.onSubmitItemTitle = this.onSubmitItemTitle.bind(this);
+      this.itemTitleRef = this.updateRef.bind(this, 'itemtitle');
         
     }
-    onPageChange(position){
-        this.setState({currentPosition: position});
-    }
 
+    // Methods to Handle the behaviour of text Field and Button
+
+    onFocus() {
+        let { errors = {} } = this.state;
+  
+        for (let name in errors) {
+          let ref = this[name];
+  
+          if (ref && ref.isFocused()) {
+            delete errors[name];
+          }
+        }
+  
+        this.setState({ errors });
+      }
+  
+      onChangeText(text) {
+        ['itemtitle']
+          .map((name) => ({ name, ref: this[name] }))
+          .forEach(({ name, ref }) => {
+            if (ref.isFocused()) {
+              this.setState({ [name]: text });
+            }
+          });
+      }
+  
+  
+      onSubmit() {
+        let errors = {};
+  
+        ['itemtitle']
+          .forEach((name) => {
+            let value = this[name].value();
+  
+            if (!value) {
+              errors[name] = 'Give your item a title';
+            }
+          });
+  
+        this.setState({ errors });
+      }
+  
+      updateRef(name, ref) {
+        this[name] = ref;
+      }
+
+      //Till Here -  Methods to Handle the behaviour of text Field and Button
       selectPhoto = () => {
 
         this.setState({loading:true})
@@ -43,7 +104,10 @@ export default class PostItemScreen extends Component {
             let count = 0;
             for(let image of images) {
             console.log(image);
-            const imagePath = image.path 
+            const imagePath = image.path
+            this.setState({
+                imagesLoaded: [...this.state.imagesLoaded, imagePath]
+            }); 
             let uploadBlob = null
             const imageRef = firebase.storage().ref(imageKey).child('dp_'+ count++ +'.jpg')
             let mime = 'image/jpg'
@@ -64,8 +128,10 @@ export default class PostItemScreen extends Component {
 
                 let userData = {}
                 let obj = {}
-                obj["loading"] = false;
-                obj["dp"] = url
+                //obj["loading"] = false;
+                obj["dp"] = url;
+                // obj["imagesLoaded"] =[...this.state.imagesLoaded, imagePath];
+                // alert(this.state.imagesLoaded.length);
                 this.setState(obj)
             })
             .catch((error) => {
@@ -133,8 +199,42 @@ export default class PostItemScreen extends Component {
             console.log(error)
         })
     }
+
+
+    // onSwipeUp(index){
+    //     //parameter returned is the index of active child
+    //     //alert(this.state.imagesLoaded)
+    //     // var array = [...this.state.imagesLoaded]; // make a separate copy of the array
+    //     // array.splice(index, 1)
+    //     // alert(this.state.imagesLoaded.length)
+    //     // this.setState({imagesLoaded: array})
+    //     // this.forceUpdate();
+    //     prevState = this.state
+    //     this.setState((prevState) => ({
+    //         imagesLoaded: update(prevState.imagesLoaded, {$splice: [[index, 1]]})
+    //       }))
+    //   }
+
+      onSwipeUp = (index) => {
+
+        var array = [...this.state.imagesLoaded];
+        array.splice(index, 1);
+        
+        this.setState(
+            { imagesLoaded:array },
+        );
+      }
   render() {
     
+
+    // const Slide = ({ images }) => (
+          
+    //     <View> 
+    //     <Image source={{uri: image}} style = {{width:100,height:100,margin:10}} />
+    //     </View>
+
+    //   );
+      
 
     //     if(this.state.dp) {     
     //     return(
@@ -151,19 +251,57 @@ export default class PostItemScreen extends Component {
     //     <Text style={styles.text}>Take Photo</Text>
     //     </TouchableOpacity></View>); }
 
+
     if(this.state.dp) {
-        return(
-        <View> 
-        <Text>Photo Uploaded by Select/Take Photo</Text>
-        <StepIndicator
-        //customStyles={myConstantClass.stepIndicatorCustomStyles}
-        currentPosition={this.state.currentPosition}
-        direction='horizontal'
-        labels={myConstantClass.labels}
-        />  
-        </View>
         
-        ); 
+        let { errors = {}, ...data } = this.state;
+        //alert('render if called');
+        // for(let image of this.state.imagesLoaded) {
+        
+        // <View> 
+        // <Image source={{uri: image}} style = {{width:100,height:100,margin:10}} />
+        // </View>
+        let images = this.state.imagesLoaded.map(image => {
+            
+            return <Image source={{uri: image}} key={image} style = {{width:200,height:100}} />
+         });
+
+         
+        return(
+        <View style={styles.container}>
+    <RNSwiper
+      minimumScale={0.7}  //scale of out of focus components
+      minimumOpacity={0.6} // opacity of out of focus components
+      overlap={20}  // the degree to which components overlap.  
+      cardWidth={200} // the width of each component
+      duration={100} // animation duration on swipe
+      swipeThreshold={100}
+      //onSwipeUp={this.onSwipeUp}
+      >
+
+
+       {images}     
+    </RNSwiper>
+
+{/* <TextField style={styles.textfieldcontainer}
+              ref={this.itemTitleRef}
+              value={data.itemtitle}
+              autoCorrect={false}
+              enablesReturnKeyAutomatically={true}
+              onFocus={this.onFocus}
+              onChangeText={this.onChangeText}
+              //onSubmitEditing={this.onSubmitFirstName}
+              //returnKeyType='next'
+              label='Item Title'
+              error={errors.itemtitle}
+            />
+
+            <RaisedTextButton onPress={this.onSubmit} title='submit' color={TextField.defaultProps.tintColor} titleColor='white' /> */}
+<TextFieldItemTitle/>
+</View>
+        );
+      
+       // }
         } 
         else {
         return(    
@@ -182,12 +320,6 @@ export default class PostItemScreen extends Component {
       >
         <Text style={styles.text}>Take Photo</Text>
         </TouchableOpacity>
-        <StepIndicator
-        //customStyles={myConstantClass.stepIndicatorCustomStyles}
-        currentPosition={this.state.currentPosition}
-        direction='horizontal'
-        labels={myConstantClass.labels}
-        />  
         </View>); }
 
 
@@ -201,6 +333,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '85%',
+  },
+  textfieldcontainer: {
+    flex:1,
+    margin: 8,
+    //marginTop: 24,
+    alignSelf: 'center',
+    bottom:w(2),
+    width: '85%',
+    paddingRight: w(2),
+    paddingLeft: w(2),
   },
   stepindicator: {
     flex: 1,
