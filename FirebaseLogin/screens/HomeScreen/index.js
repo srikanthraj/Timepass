@@ -3,8 +3,17 @@ import {StyleSheet, Text, View} from 'react-native';
 import Tabbar from 'react-native-tabbar-bottom';
 import ChatScreen from '../ChatScreen';
 import PostItemScreen from '../PostItemScreen';
+import PostItemScreen2 from '../PostItemScreen2';
 import MyOffersScreen from '../MyOffersScreen';
 import UserProfileScreen from '../UserProfileScreen'
+import NavigationBar from 'react-native-navbar';
+
+
+// const Navigation = StackNavigator({
+
+//     PostItemScreen: {screen: PostItemScreen},
+//     PostItemScreen2: {screen: PostItemScreen2},
+// });
 
 export default class HomeScreen extends Component {
 

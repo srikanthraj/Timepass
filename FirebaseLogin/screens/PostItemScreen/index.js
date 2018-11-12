@@ -5,15 +5,16 @@ import ImagePicker from 'react-native-customized-image-picker';
 import RNFetchBlob from 'react-native-fetch-blob'
 import { firebase } from '@firebase/app';
 import StepIndicator from 'react-native-step-indicator';
-import * as myConstantClass from '../../../constants'
 //import Carousel from 'react-native-snap-carousel';
-import RNSwiper from 'react-native-3d-swiper';
+
 import SwipeCard from './SwipeCard';
 import update from 'immutability-helper';
 import { TextField } from 'react-native-material-textfield';
 import { RaisedTextButton } from 'react-native-material-buttons';
 import UserProfileScreen from '../UserProfileScreen';
+import NavigationBar from 'react-native-navbar';
 import TextFieldItemTitle from '../../components/TextFieldItemTitle'
+
 
 export default class PostItemScreen extends Component {
    
@@ -23,7 +24,6 @@ export default class PostItemScreen extends Component {
             loading:false,
             imagesLoaded:[],
             dp:null,
-            itemtitle: '',
             
         };
 
@@ -84,6 +84,8 @@ export default class PostItemScreen extends Component {
       }
 
       //Till Here -  Methods to Handle the behaviour of text Field and Button
+
+      
       selectPhoto = () => {
 
         this.setState({loading:true})
@@ -227,40 +229,10 @@ export default class PostItemScreen extends Component {
   render() {
     
 
-    // const Slide = ({ images }) => (
-          
-    //     <View> 
-    //     <Image source={{uri: image}} style = {{width:100,height:100,margin:10}} />
-    //     </View>
-
-    //   );
-      
-
-    //     if(this.state.dp) {     
-    //     return(
-    //     <View style={styles.container}>    
-    //     <Text style={styles.text}>Photo Uploaded by Take Photo</Text></View>); } 
-    //     else {
-    //     return(    
-    //     <View style={styles.container}>    
-    //     <TouchableOpacity
-    //     onPress={this.takePhoto}
-    //     style={styles.button}
-    //     activeOpacity={0.6}
-    //   >
-    //     <Text style={styles.text}>Take Photo</Text>
-    //     </TouchableOpacity></View>); }
-
-
     if(this.state.dp) {
         
         let { errors = {}, ...data } = this.state;
-        //alert('render if called');
-        // for(let image of this.state.imagesLoaded) {
         
-        // <View> 
-        // <Image source={{uri: image}} style = {{width:100,height:100,margin:10}} />
-        // </View>
         let images = this.state.imagesLoaded.map(image => {
             
             return <Image source={{uri: image}} key={image} style = {{width:200,height:100}} />
@@ -269,35 +241,8 @@ export default class PostItemScreen extends Component {
          
         return(
         <View style={styles.container}>
-    <RNSwiper
-      minimumScale={0.7}  //scale of out of focus components
-      minimumOpacity={0.6} // opacity of out of focus components
-      overlap={20}  // the degree to which components overlap.  
-      cardWidth={200} // the width of each component
-      duration={100} // animation duration on swipe
-      swipeThreshold={100}
-      //onSwipeUp={this.onSwipeUp}
-      >
 
-
-       {images}     
-    </RNSwiper>
-
-{/* <TextField style={styles.textfieldcontainer}
-              ref={this.itemTitleRef}
-              value={data.itemtitle}
-              autoCorrect={false}
-              enablesReturnKeyAutomatically={true}
-              onFocus={this.onFocus}
-              onChangeText={this.onChangeText}
-              //onSubmitEditing={this.onSubmitFirstName}
-              //returnKeyType='next'
-              label='Item Title'
-              error={errors.itemtitle}
-            />
-
-            <RaisedTextButton onPress={this.onSubmit} title='submit' color={TextField.defaultProps.tintColor} titleColor='white' /> */}
-<TextFieldItemTitle/>
+<TextFieldItemTitle images={images}/>
 </View>
         );
       
@@ -306,6 +251,7 @@ export default class PostItemScreen extends Component {
         else {
         return(    
         <View style={styles.container}>
+        
         <TouchableOpacity
         onPress={this.selectPhoto}
         style={styles.button}
@@ -330,20 +276,12 @@ export default class PostItemScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '85%',
+    // alignItems: 'center',
+    // justifyContent: 'center',
+    width: 100 + '%',
+    height: 100 + '%',
   },
-  textfieldcontainer: {
-    flex:1,
-    margin: 8,
-    //marginTop: 24,
-    alignSelf: 'center',
-    bottom:w(2),
-    width: '85%',
-    paddingRight: w(2),
-    paddingLeft: w(2),
-  },
+  
   stepindicator: {
     flex: 1,
   },
@@ -353,7 +291,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: w(2),
-    backgroundColor: '#888',
+    backgroundColor: '#888', 
     borderRadius: w(10),
     marginTop: h(8),
   },
@@ -367,3 +305,4 @@ const styles = StyleSheet.create({
     height: h(5),
   },
 });
+

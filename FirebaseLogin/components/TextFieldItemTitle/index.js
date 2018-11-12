@@ -4,23 +4,8 @@ import { RaisedTextButton } from 'react-native-material-buttons';
 import { TextField } from 'react-native-material-textfield';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import {w, h, totalSize} from '../../api/Dimensions';
-
-// let styles = {
-//   scroll: {
-//     backgroundColor: '#E8EAF6',
-//   },
-
-//   container: {
-//     flex:1,
-//     margin: 8,
-//     marginTop: 24,
-//   },
-
-//   contentContainer: {
-//     padding: 8,
-//   },
-// };
-
+import PostItemScreen2 from '../../screens/PostItemScreen2';
+import RNSwiper from 'react-native-3d-swiper';
 
   export default class TextFieldItemTitle extends Component {
     constructor(props) {
@@ -28,6 +13,7 @@ import {w, h, totalSize} from '../../api/Dimensions';
 
       this.state = {
         firstname: '',
+        page: "TextFieldItemTitle",
       };
 
 
@@ -35,10 +21,11 @@ import {w, h, totalSize} from '../../api/Dimensions';
       this.onSubmit = this.onSubmit.bind(this);
       this.onChangeText = this.onChangeText.bind(this);
       //this.onSubmitItemTitle = this.onSubmitItemTitle.bind(this);
-      this.itemTitleRef = this.updateRef.bind(this, 'itemtitle');
-        
-
+      this.itemTitleRef = this.updateRef.bind(this, 'itemtitle');  
+      
     }
+
+    
 
     // Methods to Handle the behaviour of text Field and Button
 
@@ -77,6 +64,11 @@ import {w, h, totalSize} from '../../api/Dimensions';
           if (!value) {
             errors[name] = 'Give your item a title';
           }
+
+          else {
+            this.setState({page: 'PostItemScreen2'})
+           //alert('Hey');
+          }
         });
 
       this.setState({ errors });
@@ -90,11 +82,29 @@ import {w, h, totalSize} from '../../api/Dimensions';
 
     render() {
       let { errors = {}, ...data } = this.state;
+  
       //let { firstname = 'name', lastname = 'house' } = data;
       
+      if(this.state.page == 'TextFieldItemTitle') {
       return (
       
+        
           <View style={styles.container}>
+          
+          <RNSwiper style={styles.swipercontainer}
+      minimumScale={0.7}  //scale of out of focus components
+      minimumOpacity={0.6} // opacity of out of focus components
+      overlap={20}  // the degree to which components overlap.  
+      cardWidth={200} // the width of each component
+      duration={100} // animation duration on swipe
+      swipeThreshold={100}
+      //onSwipeUp={this.onSwipeUp}
+      >
+
+
+       {this.props.images}     
+    </RNSwiper>
+
             <TextField
               ref={this.itemTitleRef}
               value={data.itemtitle}
@@ -114,6 +124,14 @@ import {w, h, totalSize} from '../../api/Dimensions';
 
         
       );
+      }
+
+      else if(this.state.page == 'PostItemScreen2') {
+        return (
+          <PostItemScreen2 />
+        );
+      }
+
     }
   }
 
@@ -125,11 +143,11 @@ import {w, h, totalSize} from '../../api/Dimensions';
         container: {
           flex:1,
           margin: 8,
-          marginBottom: 24,
+          marginBottom: 60,
           //alignItems: 'center',
-    //justifyContent: 'center',
+    justifyContent: 'flex-end',
     width: '85%',
         },
   });
 
-  
+ 
