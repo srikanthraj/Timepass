@@ -62,6 +62,7 @@ export default class ShowCategories extends Component {
       else continue;
     }
     this.setState({arr: arr});
+    this.props.callbackFromParent(list);
   }
   deleteItem(item) {
     let {arr} = this.state;

@@ -12,7 +12,7 @@ import RNSwiper from 'react-native-3d-swiper';
       super(props);
 
       this.state = {
-        firstname: '',
+        itemtitle: '',
         page: "TextFieldItemTitle",
       };
 
@@ -128,7 +128,7 @@ import RNSwiper from 'react-native-3d-swiper';
 
       else if(this.state.page == 'PostItemScreen2') {
         return (
-          <PostItemScreen2 />
+          <PostItemScreen2 itemtitle={this.state.itemtitle} images={this.props.images} />
         );
       }
 

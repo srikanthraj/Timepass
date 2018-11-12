@@ -16,7 +16,8 @@ import ShowCondition from '../../components/ShowCondition';
       this.state = {
         description: '',
         page: "PostItemScreen2",
-        
+        dataFromShowCategories: null,
+        dataFromShowCondition:''
       };
 
 
@@ -45,6 +46,14 @@ import ShowCondition from '../../components/ShowCondition';
 
     //   this.setState({ errors });
     // }
+
+    myCallbackForCategories = (dataFromShowCategories) => {
+      this.setState({ dataFromShowCategories: dataFromShowCategories });
+    }
+
+    myCallbackForCondition = (dataFromShowCondition) => {
+      this.setState({ dataFromShowCondition: dataFromShowCondition });
+    }
 
     onChangeText(text) {
       ['description']
@@ -77,9 +86,9 @@ import ShowCondition from '../../components/ShowCondition';
       
         
           <View style={styles.container}>
-            <ShowCategories/>
+            <ShowCategories callbackFromParent={this.myCallbackForCategories}/>
             <Text>Condition:</Text>
-            <ShowCondition/>
+            <ShowCondition callbackFromParent={this.myCallbackForCondition}/>
             <TextField
               ref={this.descriptionRef}
               value={data.description}
@@ -106,7 +115,8 @@ import ShowCondition from '../../components/ShowCondition';
 
       else if(this.state.page == 'PostItemScreen3') {
         return (
-          <PostItemScreen3 />
+          
+          <PostItemScreen3 description = {this.state.description} categories = {this.state.dataFromShowCategories} condition = {this.state.dataFromShowCondition} itemtitle={this.props.itemtitle} images={this.props.images}/>
         );
       }
     }

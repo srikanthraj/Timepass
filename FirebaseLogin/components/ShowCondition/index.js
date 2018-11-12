@@ -16,23 +16,35 @@ export default class ShowCondition extends Component {
   } 
   getVal(val){
     
-    if(val == 1)
+    if(val == 1) {
     this.setState({ condition: "Other (See Description)", stepNumber:val })
+    this.props.callbackFromParent("Other (See Description)");  
+    }
 
-    if(val == 2)
+    if(val == 2) {
     this.setState({ condition: "For parts" , stepNumber:val})
+    this.props.callbackFromParent("For parts");  
+    }
 
-    if(val == 3)
+    if(val == 3) {
     this.setState({ condition: "Used (Normal Wear)" , stepNumber:val})
+    this.props.callbackFromParent("Used (Normal Wear)");    
+    }
 
-    if(val == 4)
+    if(val == 4) {
     this.setState({ condition: "Open box (Never Used)" , stepNumber:val})
+    this.props.callbackFromParent("Open box (Never Used)");      
+    }
 
-    if(val == 5)
+    if(val == 5) {
     this.setState({ condition: "Reconditioned/Certified" , stepNumber:val})
+    this.props.callbackFromParent("Reconditioned/Certified");        
+    }
 
-    if(val == 6)
+    if(val == 6) {
     this.setState({ condition: "New (Never Used)" , stepNumber:val})
+    this.props.callbackFromParent("New (Never Used)");          
+    }
     
   }     
   render() {    

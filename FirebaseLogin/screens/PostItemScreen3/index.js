@@ -152,7 +152,7 @@ export default class PostItemScreen3 extends Component {
      
       else if(this.state.page == 'PostItemScreen4') {
         return (
-          <PostItemScreen4 />
+          <PostItemScreen4 price = {this.state.price} per = {this.state.per} securitydeposit = {this.state.securitydeposit} fromDate = {this.state.fromDate} toDate = {this.state.toDate} description = {this.props.description} categories = {this.props.categories} condition = {this.props.condition} itemtitle={this.props.itemtitle} images={this.props.images}/>
         );
       }
   }
