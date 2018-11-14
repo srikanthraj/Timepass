@@ -105,40 +105,19 @@ export default class PostItemScreen extends Component {
           }).then(images => {
             let count = 0;
             for(let image of images) {
-            console.log(image);
+            
             const imagePath = image.path
+            count++;
+            
             this.setState({
-                imagesLoaded: [...this.state.imagesLoaded, imagePath]
+                imagesLoaded: [...this.state.imagesLoaded, imagePath],
+                
             }); 
-            let uploadBlob = null
-            const imageRef = firebase.storage().ref(imageKey).child('dp_'+ count++ +'.jpg')
-            let mime = 'image/jpg'
-            fs.readFile(imagePath,'base64')
-            .then((data) => {
-                return Blob.build(data, {type:`${mime};BASE64`})    
-            })
-            .then((blob) => {
-               uploadBlob = blob
-               return imageRef.put(blob, {contentTpe:mime})     
-            })
-            .then(() => {
-                uploadBlob.close()
-                //alert(imageRef.getDownloadURL())
-                return imageRef.getDownloadURL()
-            })
-            .then((url) => {
-
-                let userData = {}
-                let obj = {}
-                //obj["loading"] = false;
-                obj["dp"] = url;
-                // obj["imagesLoaded"] =[...this.state.imagesLoaded, imagePath];
-                // alert(this.state.imagesLoaded.length);
-                this.setState(obj)
-            })
-            .catch((error) => {
-                console.log(error)
-            })
+            if(count == images.length)
+            this.setState({
+                dp:true,
+                
+            }); 
             }
         })
         .catch((error) => {
@@ -166,35 +145,19 @@ export default class PostItemScreen extends Component {
           }).then(images => {
             let count = 0;
             for(let image of images) {
-            console.log(image);
-            const imagePath = image.path 
-            let uploadBlob = null
-            const imageRef = firebase.storage().ref(imageKey).child('dp_'+ count++ +'.jpg')
-            let mime = 'image/jpg'
-            fs.readFile(imagePath,'base64')
-            .then((data) => {
-                return Blob.build(data, {type:`${mime};BASE64`})    
-            })
-            .then((blob) => {
-               uploadBlob = blob
-               return imageRef.put(blob, {contentTpe:mime})     
-            })
-            .then(() => {
-                uploadBlob.close()
-                //alert(imageRef.getDownloadURL())
-                return imageRef.getDownloadURL()
-            })
-            .then((url) => {
-
-                let userData = {}
-                let obj = {}
-                obj["loading"] = false;
-                obj["dp"] = url
-                this.setState(obj)
-            })
-            .catch((error) => {
-                console.log(error)
-            })
+            
+            const imagePath = image.path
+            count++;
+            
+            this.setState({
+                imagesLoaded: [...this.state.imagesLoaded, imagePath],
+                
+            }); 
+            if(count == images.length)
+            this.setState({
+                dp:true,
+                
+            }); 
             }
         })
         .catch((error) => {
@@ -228,9 +191,10 @@ export default class PostItemScreen extends Component {
       }
   render() {
     
-
+    
     if(this.state.dp) {
         
+        alert(this.state.imagesLoaded.length)
         let { errors = {}, ...data } = this.state;
         
         let images = this.state.imagesLoaded.map(image => {
