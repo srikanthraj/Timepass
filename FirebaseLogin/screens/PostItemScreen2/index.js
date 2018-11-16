@@ -114,6 +114,9 @@ import ShowCondition from '../../components/ShowCondition';
       }
 
       else if(this.state.page == 'PostItemScreen3') {
+
+        if(this.state.dataFromShowCategories ==  null)
+        this.setState({ dataFromShowCategories: [] });
         return (
           
           <PostItemScreen3 description = {this.state.description} categories = {this.state.dataFromShowCategories} condition = {this.state.dataFromShowCondition} itemtitle={this.props.itemtitle} images={this.props.images}/>
