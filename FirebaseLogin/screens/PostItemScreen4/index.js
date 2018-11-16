@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {StyleSheet, Text, View,ScrollView, Dimensions, Image } from 'react-native';
+import {StyleSheet, Text, View,ScrollView, ActivityIndicator, Dimensions, Image } from 'react-native';
 import RNSwiper from 'react-native-3d-swiper';
 import firebase from '@firebase/app'
 import '@firebase/auth'
@@ -56,6 +56,7 @@ export default class PostItemScreen4 extends Component {
     super(props)
     this.state = {
       page: "PostItemScreen4",
+      isLoading: false,
       //imageurl:[]
     };
     this.onSubmit = this.onSubmit.bind(this);
@@ -225,52 +226,32 @@ export default class PostItemScreen4 extends Component {
         })
       }
       
+      this.setState({
+        page: 'PostSuccessful',
+        isLoading: false
+      })
   }
 
  
 
    onSubmit() {
-    this.uploadPhoto();   
-
-    // Setting Other Items Data to Firebase
-    let dateposted = Date.parse(new Date())
-    let itemprimarykey = firebase.auth().currentUser.uid+'_'+ dateposted;
     
-    // firebase.database().ref('items/'+itemprimarykey).set(
-    //   {
-    //     itemid:itemprimarykey,
-    //     title:this.props.itemtitle,
-    //     description:this.props.description,
-    //     rentingfrom:this.props.fromDate,
-    //     rentingtill:this.props.toDate,
-    //     rentalprice:this.props.price,
-    //     per:this.props.per,
-    //     securitydeposit:this.props.securitydeposit,
-    //     condition:this.props.condition,
-    //     categories:this.props.categories,
-    //     dateposted:new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(dateposted),
-        
-    //     // picture1url:firebase.storage().ref(itemprimarykey).child('dp_0.jpg').getDownloadURL().then((url) => {
-
-    //     // })
-    //     // picture2url:firebase.storage().ref(itemprimarykey).child('dp_1.jpg').getDownloadURL(),
-    //     // picture3url:firebase.storage().ref(itemprimarykey).child('dp_2.jpg').getDownloadURL()
-    //   }
-      
-      
-
-    // ).then(() => {
-    //   console.log('Intserted');
-    //   this.setState({page: 'PostSuccessful'})
-    // }).catch((error) => {
-    //   console.log(error);
-    // })
+    this.setState({isLoading: true})
+    this.uploadPhoto();   
   }
 
   render() {
     
+    if(this.state.isLoading){
+      return(
+        <View style={styles.activity}>
+          <ActivityIndicator size="large" color="#0000ff"/>
+        </View>
+      )
+    }
+
     //console.log('render called with page ' + this.state.page);
-    if(this.state.page == 'PostItemScreen4') {
+    else if(this.state.page == 'PostItemScreen4') {
       itemtitle = this.props.itemtitle;
       description = this.props.description;
       rentingfrom = this.props.fromDate;
@@ -346,4 +327,13 @@ const styles = StyleSheet.create({
     width,
     height,
   },
+  activity: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
 });

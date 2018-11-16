@@ -194,7 +194,6 @@ export default class PostItemScreen extends Component {
     
     if(this.state.dp) {
         
-        alert(this.state.imagesLoaded.length)
         let { errors = {}, ...data } = this.state;
         
         let images = this.state.imagesLoaded.map(image => {
