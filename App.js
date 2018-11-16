@@ -14,6 +14,40 @@ import FirebaseLogin from "./FirebaseLogin";
 import SplashScreen from "react-native-splash-screen"
 import HomeScreen from './FirebaseLogin/screens/HomeScreen';
 import { LoginButton, AccessToken } from 'react-native-fbsdk';
+// import {createStackNavigator} from 'react-navigation';
+// import BoardScreen from './components/BoardScreen';
+// import AddBoardScreen from './components/AddBoardScreen';
+// import EditBoardScreen from './components/EditBoardScreen';
+
+import PostItemScreen from './FirebaseLogin/screens/PostItemScreen'
+import PostItemScreen2 from './FirebaseLogin/screens/PostItemScreen2'
+import PostItemScreen3 from './FirebaseLogin/screens/PostItemScreen3'
+import PostItemScreen4 from './FirebaseLogin/screens/PostItemScreen4'
+
+// const RootStack = createStackNavigator(
+//   {
+//     // PostItem: PostItemScreen,
+//     // PostItem2: PostItemScreen2,
+//     // PostItem3: PostItemScreen3,
+//     // PostItem4: PostItemScreen4,
+//     Board: BoardScreen,
+//     AddBoard: AddBoardScreen,
+//     EditBoard: EditBoardScreen,
+//   },
+//   {
+//     initialRouteName: 'Board',
+//     navigationOptions: {
+//       headerStyle: {
+//         backgroundColor: '#777777',
+//       },
+//       headerTintColor: '#fff',
+//       headerTitleStyle: {
+//         fontWeight: 'bold',
+//       },
+//     },
+//   },
+// );
+
 export default class App extends Component {
 
   // componentDidMount() {
@@ -64,11 +98,19 @@ export default class App extends Component {
   render() {
       if (this.state.loading) return null; // Render loading/splash screen etc
       if (this.state.authenticated) {
-           return (<HomeScreen/> );
+           return (
+            // <View style = {styles.container}>
+            //   <RootStack />
+              <HomeScreen/>
+              // </View> 
+           );
        }
         //alert('Login Screen');
       return (
+        // <View style = {styles.container}>
+        // <RootStack />
         <FirebaseLogin login={user => alert(user)}/>
+        // </View>
       );  
   }
 }

@@ -7,9 +7,22 @@ import { RaisedTextButton } from 'react-native-material-buttons';
 import PostSuccessful from '../PostSuccessful'
 import { TextField } from 'react-native-material-textfield';
 import RNFetchBlob from 'react-native-fetch-blob'
+import InsertToFirebase from '../../components/InsertToFirebase';
 
 const {width} = Dimensions.get('window');
 const height = width * 0.8;
+let itemtitle = '';
+let description = '';
+let picture1url = '';
+let picture2url = '';
+let picture3url = '';
+let rentingfrom = null;
+let rentingtill = null;
+let rentalprice = '';
+let per = '';
+let securitydeposit = '';
+let condition = '';
+let categories = [];
 
 //let imageurl = []
 
@@ -31,19 +44,7 @@ class Carousel extends Component {
          
          </View>
 
-    //     <RNSwiper style={styles.scrollContainer}
-    //   minimumScale={0.7}  //scale of out of focus components
-    //   minimumOpacity={0.6} // opacity of out of focus components
-    //   overlap={0}  // the degree to which components overlap.  
-    //   cardWidth={width} // the width of each component
-    //   duration={100} // animation duration on swipe
-    //   swipeThreshold={100}
-    //   //onSwipeUp={this.onSwipeUp}
-    //   >
-
-
-    //    {this.props.images}     
-    // </RNSwiper>
+   
       );
   }
 }
@@ -55,15 +56,14 @@ export default class PostItemScreen4 extends Component {
     super(props)
     this.state = {
       page: "PostItemScreen4",
-      imageurl:[]
+      //imageurl:[]
     };
     this.onSubmit = this.onSubmit.bind(this);
     this.uploadPhoto = this.uploadPhoto.bind(this);
+    
   }
 
- async uploadPhoto() {
-
-    
+  uploadPhoto() {
 
         const Blob = RNFetchBlob.polyfill.Blob
         const fs = RNFetchBlob.fs
@@ -86,82 +86,203 @@ export default class PostItemScreen4 extends Component {
           })
           .then((blob) => {
              uploadBlob = blob
-             return imageRef.put(blob, {contentTpe:mime})     
-          })
-          .then(() => {
-            //console.log(imageRef.getDownloadURL())
-              uploadBlob.close()
-              
-              imageRef.getDownloadURL().then((url) => {
-                //imageurl.push(url);
-                this.setState({
-                  imageurl: [...this.state.imageurl, url],  
-              }); 
-              //console.log(this.state.imageurl);
+             var uploadTask =  imageRef.put(blob, {contentTpe:mime}) 
+
+             // Listen for state changes, errors, and completion of the upload.
+        uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+        function (snapshot) {
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log('Upload is ' + progress + '% done');
+          switch (snapshot.state) {
+            case firebase.storage.TaskState.PAUSED: // or 'paused'
+              console.log('Upload is paused');
+              break;
+            case firebase.storage.TaskState.RUNNING: // or 'running'
+              console.log('Upload is running');
+              break;
+          }
+        },
+        function (error) {
+
+          // A full list of error codes is available at
+          // https://firebase.google.com/docs/storage/web/handle-errors
+          switch (error.code) {
+            case 'storage/unauthorized':
+              // User doesn't have permission to access the object
+              break;
+
+            case 'storage/canceled':
+              // User canceled the upload
+              break;
+
+            case 'storage/unknown':
+              // Unknown error occurred, inspect error.serverResponse
+              break;
+          }
+        },
+        function () {
+          // Upload completed successfully, now we can get the download URL
+          uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+            console.log('File available at', downloadURL);
+            //console.log(this.props.itemtitle);
+            if(downloadURL.includes('dp_0.jpg')) {
+              //console.log('first image')
+              picture1url = downloadURL;
+              firebase.database().ref('items/'+imageKey).set(
+                {
+                  itemid:imageKey,
+                  title:itemtitle,
+                  description:description,
+                  rentingfrom:rentingfrom,
+                  rentingtill:rentingtill,
+                  rentalprice:rentalprice,
+                  per:per,
+                  securitydeposit:securitydeposit,
+                  condition:condition,
+                  categories:categories,
+                  dateposted:new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp),
+                  picture1url:downloadURL,
+                  picture2url:picture2url,
+                  picture3url:picture3url
+                }
+              ).then(() => {
+                console.log('First Image Inserted');
+                //this.setState({page: 'PostSuccessful'})
+              }).catch((error) => {
+                console.log(error);
               })
+            }
+
+            else if(downloadURL.includes('dp_1.jpg')) {
+
+            //console.log('second image')
+            picture2url = downloadURL;
+            firebase.database().ref('items/'+imageKey).set(
+              {
+                  itemid:imageKey,
+                  title:itemtitle,
+                  description:description,
+                  rentingfrom:rentingfrom,
+                  rentingtill:rentingtill,
+                  rentalprice:rentalprice,
+                  per:per,
+                  securitydeposit:securitydeposit,
+                  condition:condition,
+                  categories:categories,
+                  dateposted:new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp),
+                  picture1url:picture1url,
+                  picture2url:downloadURL,
+                  picture3url:picture3url
+              }
+              ).then(() => {
+                console.log('Second Image Inserted');
+                //this.setState({page: 'PostSuccessful'})
+              }).catch((error) => {
+                console.log(error);
+              })
+
+            }
+
+            else if(downloadURL.includes('dp_2.jpg')) {
+            //console.log('third image')
+            picture3url = downloadURL;
+            firebase.database().ref('items/'+imageKey).set(
+              {
+                  itemid:imageKey,
+                  title:itemtitle,
+                  description:description,
+                  rentingfrom:rentingfrom,
+                  rentingtill:rentingtill,
+                  rentalprice:rentalprice,
+                  per:per,
+                  securitydeposit:securitydeposit,
+                  condition:condition,
+                  categories:categories,
+                  dateposted:new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp),
+                  picture1url:picture1url,
+                  picture2url:picture2url,
+                  picture3url:downloadURL,
+              }
+              ).then(() => {
+                console.log('Third Image Inserted');
+                //this.setState({page: 'PostSuccessful'})
+              }).catch((error) => {
+                console.log(error);
+              })
+            }
+          });
+        });
+            return uploadTask;
+          })
+          .then((url) => {
+              //console.log(count)
+              //console.log(url)
+              uploadBlob.close()
           })
           .catch((error) => {
             console.log(error)
         })
       }
       
-        }
+  }
 
+ 
 
-
-  onSubmit() {
-    
-    (async () => {
-      await this.uploadPhoto();
-  })();
+   onSubmit() {
+    this.uploadPhoto();   
 
     // Setting Other Items Data to Firebase
     let dateposted = Date.parse(new Date())
     let itemprimarykey = firebase.auth().currentUser.uid+'_'+ dateposted;
-    // let image1Path = firebase.storage().ref().child(itemprimarykey).child('dp_0.jpg'); 
-    // image1Path.getDownloadURL().then((url) => {
-    //   image1url = url;
+    
+    // firebase.database().ref('items/'+itemprimarykey).set(
+    //   {
+    //     itemid:itemprimarykey,
+    //     title:this.props.itemtitle,
+    //     description:this.props.description,
+    //     rentingfrom:this.props.fromDate,
+    //     rentingtill:this.props.toDate,
+    //     rentalprice:this.props.price,
+    //     per:this.props.per,
+    //     securitydeposit:this.props.securitydeposit,
+    //     condition:this.props.condition,
+    //     categories:this.props.categories,
+    //     dateposted:new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(dateposted),
+        
+    //     // picture1url:firebase.storage().ref(itemprimarykey).child('dp_0.jpg').getDownloadURL().then((url) => {
 
-    // });
-    
-    console.log(this.state.imageurl.length);
-    
-    this.state.imageurl.map(image => {
-            
-      console.log(image);
-   });
-    
-    firebase.database().ref('items/'+itemprimarykey).set(
-      {
-        itemid:itemprimarykey,
-        title:this.props.itemtitle,
-        description:this.props.description,
-        rentingfrom:this.props.fromDate,
-        rentingtill:this.props.toDate,
-        rentalprice:this.props.price,
-        per:this.props.per,
-        securitydeposit:this.props.securitydeposit,
-        condition:this.props.condition,
-        categories:this.props.categories,
-        dateposted:new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(dateposted),
-        // picture1url:firebase.storage().ref(itemprimarykey).child(itemprimarykey+'/dp_0.jpg').getDownloadURL()
-        // picture2url:firebase.storage().ref(itemprimarykey).child('dp_1.jpg').getDownloadURL(),
-        // picture3url:firebase.storage().ref(itemprimarykey).child('dp_2.jpg').getDownloadURL()
-      }
+    //     // })
+    //     // picture2url:firebase.storage().ref(itemprimarykey).child('dp_1.jpg').getDownloadURL(),
+    //     // picture3url:firebase.storage().ref(itemprimarykey).child('dp_2.jpg').getDownloadURL()
+    //   }
+      
       
 
-    ).then(() => {
-      console.log('Intserted');
-      this.setState({page: 'PostSuccessful'})
-    }).catch((error) => {
-      console.log(error);
-    })
-
-}
+    // ).then(() => {
+    //   console.log('Intserted');
+    //   this.setState({page: 'PostSuccessful'})
+    // }).catch((error) => {
+    //   console.log(error);
+    // })
+  }
 
   render() {
     
+    //console.log('render called with page ' + this.state.page);
     if(this.state.page == 'PostItemScreen4') {
+      itemtitle = this.props.itemtitle;
+      description = this.props.description;
+      rentingfrom = this.props.fromDate;
+      rentingtill = this.props.toDate;
+      rentalprice = this.props.price;
+      per = this.props.per;
+      securitydeposit = this.props.securitydeposit; 
+      condition = this.props.condition;
+      {(this.props.categories).map((category,key) => (
+        categories.push(category.name)
+       ))}
+
     return (
       <View style={styles.container}>
         <Carousel images = {this.props.images} />

@@ -7,6 +7,7 @@ import PostItemScreen2 from '../PostItemScreen2';
 import MyOffersScreen from '../MyOffersScreen';
 import UserProfileScreen from '../UserProfileScreen'
 import NavigationBar from 'react-native-navbar';
+import PresentItemsScreen from '../PresentItemsScreen'
 
 
 // const Navigation = StackNavigator({
@@ -67,7 +68,7 @@ export default class HomeScreen extends Component {
             />
 
             {this.state.page === "HomeScreen" && <View style={styles.textContainer}>  
-            <Text>Hello World!</Text>
+            <PresentItemsScreen />
             </View>}
 
           </View>
