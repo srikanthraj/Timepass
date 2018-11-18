@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, ActivityIndicator, Image} from 'react-native';
 import Tabbar from 'react-native-tabbar-bottom';
 import ChatScreen from '../ChatScreen';
 import PostItemScreen from '../PostItemScreen';
@@ -8,7 +8,9 @@ import MyOffersScreen from '../MyOffersScreen';
 import UserProfileScreen from '../UserProfileScreen'
 import NavigationBar from 'react-native-navbar';
 import PresentItemsScreen from '../PresentItemsScreen'
-
+import firebase from '@firebase/app'
+import '@firebase/auth'
+import GridView from 'react-native-super-grid';
 
 // const Navigation = StackNavigator({
 
@@ -16,16 +18,21 @@ import PresentItemsScreen from '../PresentItemsScreen'
 //     PostItemScreen2: {screen: PostItemScreen2},
 // });
 
+
+
 export default class HomeScreen extends Component {
 
     constructor() {
         super()
         this.state = {
           page: "HomeScreen",
-        }
+         
+        };
+        
       }
 
       render() {
+
         return (
           <View style={styles.container}>
         
@@ -35,8 +42,9 @@ export default class HomeScreen extends Component {
             {this.state.page === "MyOffersScreen" && <MyOffersScreen />}
             {this.state.page === "UserProfileScreen" && <UserProfileScreen />} 
     
-            <Tabbar
+            <Tabbar style = {{width:100, height:100}}
               stateFunc={(tab) => {
+                
                 this.setState({page: tab.page})
                 //this.props.navigation.setParams({tabTitle: tab.title})
               }}
@@ -49,7 +57,7 @@ export default class HomeScreen extends Component {
                 {
                   page: "ChatScreen",
                   icon: "notifications",
-                  badgeNumber: 11,
+                  
                 },
                 {
                   page: "PostItemScreen",
@@ -58,7 +66,7 @@ export default class HomeScreen extends Component {
                 {
                   page: "MyOffersScreen",
                   icon: "chatbubbles",
-                  badgeNumber: 7,
+                  
                 },
                 {
                   page: "UserProfileScreen",
@@ -67,9 +75,13 @@ export default class HomeScreen extends Component {
               ]}
             />
 
+             
             {this.state.page === "HomeScreen" && <View style={styles.textContainer}>  
             <PresentItemsScreen />
             </View>}
+            
+            
+
 
           </View>
 
@@ -82,5 +94,6 @@ const styles = StyleSheet.create({
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
-    }
+    },
+  
   });
