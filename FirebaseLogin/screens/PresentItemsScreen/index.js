@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import {StyleSheet, Text, View, ActivityIndicator, Image, Dimensions, FlatList } from 'react-native';
+import {StyleSheet, Text, View, ActivityIndicator, Image, Dimensions, FlatList,TouchableOpacity } from 'react-native';
 import NavigationBar from 'react-native-navbar';
 import firebase from '@firebase/app'
 import '@firebase/auth'
 import GridView from 'react-native-super-grid';
 import GridList from 'react-native-grid-list';
 import { ListItem } from 'native-base';
+import PresentIndividualItem from '../PresentIndividualItem';
 
 let imagesList
 
@@ -18,10 +19,13 @@ export default class PresentItemsScreen extends Component {
         imagesList = []; 
       
         this.state = {
+          page: "PresentItemsScreen",
           isLoading: true,
+          itemid: '',
         };
 
-       
+    //this.showItem = this.showItem.bind(this);
+
     const dataRef = firebase.database().ref().child('items');
     dataRef.once('value').then(snapshot => {
         // snapshot.val() is the dictionary with all your keys/values from the '/store' path
@@ -40,7 +44,11 @@ export default class PresentItemsScreen extends Component {
 
     }
 
-    
+   
+    showItem = (item) => {
+      // <PresentIndividualItem itemid = {item} />
+      this.setState({page:"PresentIndividualItem", itemid:item})
+    }
 
 
   render() {
@@ -55,7 +63,7 @@ export default class PresentItemsScreen extends Component {
       )
     }
 
-    else {
+    else if(this.state.page == "PresentItemsScreen"){
       // alert(dimension.height);
       return( 
         
@@ -74,11 +82,19 @@ export default class PresentItemsScreen extends Component {
         style={styles.gridView}
         renderItem={item => (
           <View style={[styles.itemContainer]}>
+           <TouchableOpacity onPress={this.showItem.bind(this,item.substring(item.indexOf('.com/o/')+7,item.indexOf('%2Fdp_0.jpg')))}>
             <Image source={{uri: item}} key={item} style = {styles.image} />
+            </TouchableOpacity>
           </View>
         )}
       />
       </View>
+      )
+    }
+
+    else {
+      return (
+      <PresentIndividualItem itemid = {this.state.itemid} />
       )
     }
     
